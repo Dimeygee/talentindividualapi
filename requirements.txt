@@ -6,8 +6,10 @@ coreapi==2.3.3
 coreschema==0.0.4
 cryptography==38.0.1
 defusedxml==0.7.1
+dj-database-url==1.0.0
 Django==4.1.1
 django-cors-headers==3.13.0
+django-heroku==0.3.1
 django-rest-knox==4.2.0
 django-templated-mail==1.1.1
 djangorestframework==3.13.1
@@ -17,6 +19,7 @@ itypes==1.2.0
 Jinja2==3.1.2
 MarkupSafe==2.1.1
 oauthlib==3.2.1
+psycopg2==2.9.3
 pycparser==2.21
 PyJWT==2.5.0
 python3-openid==3.2.0
@@ -30,3 +33,4 @@ sqlparse==0.4.2
 tzdata==2022.2
 uritemplate==4.1.1
 urllib3==1.26.12
+whitenoise==6.2.0

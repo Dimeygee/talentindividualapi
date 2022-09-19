@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 import os
+import django_heroku
 
 from datetime import timedelta
 
@@ -26,12 +27,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jn3=k7(ef4*!1=+@wf1m@nfe-#0khzgcfdoa%^=iml99!a8ycz'
+#SECRET_KEY = 'django-insecure-jn3=k7(ef4*!1=+@wf1m@nfe-#0khzgcfdoa%^=iml99!a8ycz'
+SECRET_KEY=os.environ.get("DB_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['talentindividualsapi.herokuapp.com']
 
 
 # Application definition
@@ -149,3 +151,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+django_heroku.settings(locals())
