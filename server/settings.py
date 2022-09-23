@@ -64,7 +64,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     'https://talentindividuals.netlify.app',
-    'https://talentindividual.vercel.app/',
+    'https://talentindividual.vercel.app',
     "http://localhost:3000",
     "http://localhost:3001",
     "http://localhost:3002",
