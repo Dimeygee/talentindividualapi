@@ -55,12 +55,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         ('Full-Time','Full-Time'),
         ('Part-Time','Part-Time'),
     ]
-    username = models.CharField(db_index=True,max_length=50,unique=True)
-    email = models.EmailField(db_index=True,unique=True) 
-    firstname = models.CharField(max_length=50) 
-    lastname = models.CharField(max_length=50) 
+    username = models.CharField(db_index=True,max_length=50,unique=True, blank=True)
+    email = models.EmailField(db_index=True,unique=True,blank=True) 
+    firstname = models.CharField(max_length=50,blank=True) 
+    lastname = models.CharField(max_length=50,blank=True) 
     signup_choices = models.CharField(max_length=512, choices=SIGNUP_CHOICES)
-    cv= models.FileField(upload_to='cv',blank=True, null=True)
+    cv= models.FileField(upload_to='cv',blank=True)
     jobType= models.CharField(max_length=512,choices=JOBTYPE_CHOICES)
     jobContract = models.CharField(max_length=512,choices=JOBCONTRACT_CHOICES)
     is_active = models.BooleanField(default=True)

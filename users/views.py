@@ -1,8 +1,21 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
+from rest_framework import status
 from knox.models import AuthToken
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
-from rest_framework.parsers import MultiPartParser, FormParser 
+from .models import User
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, UpdateSerializer, ResetPasswordSerializer, SendCvSerializer
+from rest_framework.parsers import MultiPartParser, FormParser , JSONParser
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+import smtplib
+from email.message import EmailMessage
+import os
+
+
+USERNAME = os.environ.get("DB_USERNAME")
+PASSWORD = os.environ.get("DB_SECRET_KEY")
+
+
 # Register API
 class RegisterAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
@@ -22,7 +35,6 @@ class LoginAPI(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
@@ -41,3 +53,75 @@ class UserAPI(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+    
+    
+    
+class UpdateAPI(APIView):
+    serializer_class = UpdateSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    
+    def put(self, request, *args, **kwargs):
+        serializer = self.serializer_class(request.user,data=request.data,partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    
+class ResetPasswordVIew(APIView):
+
+    serializer_class = ResetPasswordSerializer
+
+    def post(self, request, pk=None):
+        user = get_object_or_404(User, username=request.user.username)
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        oldpassword = serializer.validated_data['oldpassword']
+        newpassword = serializer.validated_data['newpassword']
+        if not user.check_password(oldpassword):
+            return Response({'oldpassword': ['Wrong password']}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user.set_password(newpassword)
+        user.save()
+        response = {
+            'status': 'success',
+            'code':status.HTTP_200_OK,
+            'message':'Password updated successfully'
+        }
+        return Response(response)
+    
+    
+class SendMailView(APIView):
+    serializer_class = SendCvSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    
+    def post(self,request,*args, **kwags):
+        serializer = self.serializer_class(data=request.data)
+        print(request.data)
+        if serializer.is_valid(raise_exception=True):
+            file = serializer.validated_data['file']
+            
+            msg = EmailMessage()
+            msg["subject"] = "cv upload from talentindividual"
+            msg["from"] = "Info@talentindividuals.co.uk"
+            msg["To"] = "adeyemioladimeji130@gmail.com"
+            msg.set_content("frontend role")
+        
+            msg.add_attachment(file.read(),maintype="application", subtype="octet-stream",filename=file.name)
+            
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                smtp.login(USERNAME, PASSWORD)
+                smtp.send_message(msg)
+            return Response({"status": "200 ok"})
+        
+        else: 
+            return Response({"status": "400 BAD"})
+            
+            
+            
+            
