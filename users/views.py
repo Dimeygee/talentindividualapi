@@ -25,11 +25,12 @@ class RegisterAPI(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"]
         user = serializer.save()
         msg = EmailMessage()
         msg["subject"] = "TalentIndividuals Sign up"
         msg["from"] = "Info@talentindividuals.co.uk"
-        msg["To"] = "Info@talentindividuals.co.uk"
+        msg["To"] = email
         msg.set_content("")
         msg.add_alternative("""\
             <!Doctype html>
