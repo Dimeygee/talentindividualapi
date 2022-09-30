@@ -15,6 +15,7 @@ import os
 USERNAME = os.environ.get("DB_USERNAME")
 PASSWORD = os.environ.get("DB_SECRET_KEY")
 
+print(PASSWORD)
 
 # Register API
 class RegisterAPI(generics.GenericAPIView):
@@ -25,6 +26,25 @@ class RegisterAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        msg = EmailMessage()
+        msg["subject"] = "TalentIndividuals Sign up"
+        msg["from"] = "Info@talentindividuals.co.uk"
+        msg["To"] = "Info@talentindividuals.co.uk"
+        msg.set_content("")
+        msg.add_alternative("""\
+            <!Doctype html>
+            <html>
+                <body>
+                    <h4>Hello,</h4>
+                    
+                    <h4>Thanks for signing up to TalentIndividuals</h4>
+                </body>
+            </html>
+        """,subtype="html")
+            
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+            smtp.login(USERNAME, PASSWORD)
+            smtp.send_message(msg)
         return Response({
         "user": UserSerializer(user, context=self.get_serializer_context()).data,
         "token": AuthToken.objects.create(user)[1]
