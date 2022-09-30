@@ -60,7 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     firstname = models.CharField(max_length=50,blank=True) 
     lastname = models.CharField(max_length=50,blank=True) 
     signup_choices = models.CharField(max_length=512, choices=SIGNUP_CHOICES)
-    cv= models.FileField(upload_to='cv',blank=True)
+    cv= models.FileField(upload_to='cv',blank=True, null=True)
     jobType= models.CharField(max_length=512,choices=JOBTYPE_CHOICES)
     jobContract = models.CharField(max_length=512,choices=JOBCONTRACT_CHOICES)
     is_active = models.BooleanField(default=True)

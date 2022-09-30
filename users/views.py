@@ -109,8 +109,8 @@ class SendMailView(APIView):
             msg = EmailMessage()
             msg["subject"] = "cv upload from talentindividual"
             msg["from"] = "Info@talentindividuals.co.uk"
-            msg["To"] = "adeyemioladimeji130@gmail.com"
-            msg.set_content("frontend role")
+            msg["To"] = "Info@talentindividuals.co.uk"
+            msg.set_content("")
         
             msg.add_attachment(file.read(),maintype="application", subtype="octet-stream",filename=file.name)
             
