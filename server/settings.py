@@ -65,10 +65,9 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     'https://talentindividuals.netlify.app',
     'https://talentindividual.vercel.app',
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "http://localhost:3002",
-    "http://localhost:3003",
+    'https://www.talentindividuals.co.uk',
+    'https://talentindividuals.co.uk',
+    "http://localhost:3000"
 ]
 
 MIDDLEWARE = [
