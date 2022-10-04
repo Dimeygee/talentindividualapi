@@ -7,6 +7,7 @@ from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, Up
 from rest_framework.parsers import MultiPartParser, FormParser , JSONParser
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 import smtplib
 from email.message import EmailMessage
 import os
@@ -15,7 +16,7 @@ import os
 USERNAME = os.environ.get("DB_USERNAME")
 PASSWORD = os.environ.get("DB_SECRET_KEY")
 
-print(PASSWORD)
+#print(PASSWORD)
 
 # Register API
 class RegisterAPI(generics.GenericAPIView):
@@ -25,23 +26,16 @@ class RegisterAPI(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        username = serializer.validated_data["username"]
         email = serializer.validated_data["email"]
+        html_content = render_to_string("users/email.html", { "username" : username })
         user = serializer.save()
         msg = EmailMessage()
         msg["subject"] = "TalentIndividuals Sign up"
         msg["from"] = "Info@talentindividuals.co.uk"
         msg["To"] = email
         msg.set_content("")
-        msg.add_alternative("""\
-            <!Doctype html>
-            <html>
-                <body>
-                    <h4>Hello,</h4>
-                    
-                    <h4>Thanks for signing up to TalentIndividuals</h4>
-                </body>
-            </html>
-        """,subtype="html")
+        msg.add_alternative(html_content,subtype="html")
             
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
             smtp.login(USERNAME, PASSWORD)
