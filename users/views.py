@@ -32,7 +32,7 @@ class RegisterAPI(generics.GenericAPIView):
         user = serializer.save()
         msg = EmailMessage()
         msg["subject"] = "TalentIndividuals Sign up"
-        msg["from"] = "Info@talentindividuals.co.uk"
+        msg["from"] = "talentindividuals@gmail.com"
         msg["To"] = email
         msg.set_content("")
         msg.add_alternative(html_content,subtype="html")
@@ -88,6 +88,9 @@ class UpdateAPI(APIView):
 class ResetPasswordVIew(APIView):
 
     serializer_class = ResetPasswordSerializer
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
 
     def post(self, request, pk=None):
         user = get_object_or_404(User, username=request.user.username)
@@ -123,8 +126,8 @@ class SendMailView(APIView):
             
             msg = EmailMessage()
             msg["subject"] = "cv upload from talentindividual"
-            msg["from"] = "Info@talentindividuals.co.uk"
-            msg["To"] = "Info@talentindividuals.co.uk"
+            msg["from"] = "talentindividuals@gmail.com"
+            msg["To"] = "talentindividuals@gmail.com"
             msg.set_content("")
         
             msg.add_attachment(file.read(),maintype="application", subtype="octet-stream",filename=file.name)
